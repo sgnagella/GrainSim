@@ -48,14 +48,51 @@ struct Box {
     return minusInvBoxSize.z != 0;
   }
 
-  inline __host__ __device__ real3 apply_pbc(real3 r) const {
+  inline __host__ __device__ real3 apply_pbc(real3 r, real3 *image = nullptr) const {
     // return  r - floorf(r/L+real(0.5))*L; //MIC Algorithm
     real3 offset = floorf(r * minusInvBoxSize + real(0.5)); // MIC Algorithm
+
+    if (image != nullptr) {
+      real3 disp = roundf( r * minusInvBoxSize );
+      image->x += -disp.x;
+      image->y += -disp.y;
+      image->z += -disp.z;
+    }
+
     r.x += isPeriodicX() ? (offset.x * boxSize.x) : 0;
     r.y += isPeriodicY() ? (offset.y * boxSize.y) : 0;
     r.z += isPeriodicZ() ? (offset.z * boxSize.z) : 0;
+    
+    
     return r;
   }
+
+  // inline __host__ __device__ real3 apply_pbc_lees_edwards(real3 r, real K, real time, real3 *image = nullptr) const {
+  //   // Apply Lees Edwards BCs in the X-direction due to an imposed shear flow in the Y-direction
+  //   // K is the shear rate (dU_x/dy)
+  //   // time is the current time
+
+  //   if( isPeriodicY() ){
+  //     real shear_displacement = K * boxSize.y * time; // Total shear displacement
+  //     real nbox = roundf(shear_displacement / boxSize.x); // Number of boxes crossed
+  //     if( r.y > boxSize.y * real(0.5)){
+  //       r.x -= mod(shear_displacement, boxSize.x);      // Apply the shear
+  //       r.x -= nbox * boxSize.x; // Apply the shear displacement
+  //       if (image != nullptr) {
+  //         image->x += nbox;
+  //       }
+  //     }
+  //     else if( r.y > boxSize.y * real(0.5)){
+  //       r.x += mod(shear_displacement, boxSize.x);      // Apply the shear displacement
+  //       r.x += nbox * boxSize.x; // Apply the shear displacement
+  //       if (image != nullptr) {
+  //         image->x += nbox;
+  //       }
+  //     }
+  //   }
+  //   return apply_pbc(r, image);
+
+  // }
   template <class vecType>
   inline __device__ __host__ bool isInside(const vecType &pos) const {
     real3 boxSizehalf = real(0.5) * boxSize;

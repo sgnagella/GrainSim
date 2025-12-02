@@ -27,7 +27,14 @@
 /*       ((PropertyName, propertyName, TYPE)) \      */
 // The preprocessor ensures that they are included wherever is needed
 #ifndef EXTRA_PARTICLE_PROPERTIES
-#define EXTRA_PARTICLE_PROPERTIES
+#define EXTRA_PARTICLE_PROPERTIES       \
+            ((Image, image, real3))     \
+            ((InitCenter, initCenter, real3)) \
+            ((HalfVel, halfVel, real3)) \
+            ((HalfAngVel, halfAngVel, real4)) \
+            ((StressX, stressX, real3)) \
+            ((StressY, stressY, real3)) \
+            ((StressZ, stressZ, real3))
 #endif
 // clang-format off
 #define IMPL_ALL_PROPERTIES_LIST        \

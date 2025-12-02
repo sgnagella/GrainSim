@@ -141,6 +141,10 @@ __global__ void integrateGPU(real4 *pos,
   pos[i].y = R.y;
   if (!is2D)
     pos[i].z = R.z;
+
+  // Periodic BCs
+  
+  
 }
 
 } // namespace EulerMaruyama_ns

@@ -200,6 +200,10 @@ VECATTR float3 floorf(const float3 &a) {
   return make_float3(floorf(a.x), floorf(a.y), floorf(a.z));
 }
 
+VECATTR float3 roundf(const float3 &a) {
+  return make_float3(roundf(a.x), roundf(a.y), roundf(a.z));
+}
+
 /////////////////////FLOAT4///////////////////////////////
 
 VECATTR float4 make_float4(float a) { return make_float4(a, a, a, a); }
